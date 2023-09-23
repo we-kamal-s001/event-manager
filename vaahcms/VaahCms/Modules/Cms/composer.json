@@ -1,0 +1,28 @@
+{
+    "name": "vaahcms/cms",
+    "description": "Cms",
+    "version": "0.1.13",
+    "authors": [
+        {
+            "name": "vaah",
+            "email": "support@vaah.dev"
+        }
+    ],
+    "require": {
+        "php": "^7.3"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VaahCms\\Modules\\Cms\\Providers\\CmsServiceProvider"
+            ],
+            "aliases": {
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "VaahCms\\Modules\\Cms\\": "/"
+        }
+    }
+}
