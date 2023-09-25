@@ -60,6 +60,11 @@ class Events extends Model
     {
         return [
             'uuid',
+            'name',
+            'slug',
+            'is_active',
+            'date',
+            'location',
             'created_by',
             'updated_by',
             'deleted_by',
@@ -122,11 +127,17 @@ class Events extends Model
     {
         return $this->belongsTo(Manager::class);
     }
+
     //-------------------------------------------------
     public function category()
     {
-        return $this->morphMany(category::class,'categoryable','','','',)
-            ;
+        return $this->morphMany(category::class, 'categoryable')
+            ->with('getTaxonomy');
+    }
+
+    public function taxonomyCategory()
+    {
+        return $this->belongsTo(Taxonomy::class);
     }
 
 
@@ -194,10 +205,10 @@ class Events extends Model
         $item = new self();
         $item->fill($inputs);
         $item->slug = Str::slug($inputs['slug']);
-        $item->manager_id=$request->manager;
+        $item->manager_id = $request->managers;
         $item->save();
         $item->category()->create([
-           'category_id'=>$request->category,
+            'category_id' => $request->category,
         ]);
 
 
@@ -279,6 +290,18 @@ class Events extends Model
                 ->orWhere('slug', 'LIKE', '%' . $search . '%');
         });
 
+    }  //-------------------------------------------------
+    public function scopeManagerFilter($query, $filter)
+    {
+
+        if (!isset($filter['filter_by_manager'])) {
+            return $query;
+        }
+        $search = $filter['filter_by_manager'];
+        $query->where(function ($q) use ($search) {
+            $q->whereIn('manager_id', $search);
+        });
+
     }
 
     //-------------------------------------------------
@@ -288,13 +311,13 @@ class Events extends Model
         $list->isActiveFilter($request->filter);
         $list->trashedFilter($request->filter);
         $list->searchFilter($request->filter);
-
+        $list->managerFilter($request->filter);
         $rows = config('vaahcms.per_page');
 
         if ($request->has('rows')) {
             $rows = $request->rows;
         }
-
+        $list=$list->with(['manager','category','taxonomyCategory']);
         $list = $list->paginate($rows);
 
         $response['success'] = true;
@@ -485,7 +508,7 @@ class Events extends Model
     {
 
         $item = self::where('id', $id)
-            ->with(['createdByUser', 'updatedByUser', 'deletedByUser','category','manager'])
+            ->with(['createdByUser', 'updatedByUser', 'deletedByUser', 'category', 'manager'])
             ->withTrashed()
             ->first();
 
@@ -535,10 +558,10 @@ class Events extends Model
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
         $item->slug = Str::slug($inputs['slug']);
-        $item->manager_id=$request->manager;
+        $item->manager_id = $request->manager;
         $item->save();
         $item->category()->update([
-            'category_id'=>$request->category,
+            'category_id' => $request->category,
         ]);
 
         $response = self::getItem($item->id);
@@ -602,6 +625,10 @@ class Events extends Model
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
+            'category'=>'required',
+            'location'=>'required|max:150',
+            'managers'=>'required',
+            'date'=>'required'
         );
 
         $validator = \Validator::make($inputs, $rules);
@@ -650,24 +677,26 @@ class Events extends Model
     //-------------------------------------------------
     public static function fillItem()
     {
-        $request = new Request([
-            'model_namespace' => self::class,
-            'except' => self::getUnFillableColumns()
-        ]);
-        $fillable = VaahSeeder::fill($request);
-        if (!$fillable['success']) {
-            return $fillable;
-        }
-        $inputs = $fillable['data']['fill'];
-
         $faker = Factory::create();
+        $inputs = [];
+        $manager = Manager::all()->pluck('id')->toArray();
+        $random_index = array_rand($manager);
+        $selected_manager = $manager[$random_index];
 
-        /*
-         * You can override the filled variables below this line.
-         * You should also return relationship from here
-         */
+        $inputs['name'] = $faker->text(25);
+        $inputs['slug'] = Str::slug($inputs['name']);
+        $inputs['location'] =  $faker->country();
+        $inputs['date'] =  $faker->date();
+        $inputs['category']=4;
+        $inputs['manager']=$selected_manager;
 
-        return $inputs;
+        $response['success'] = true;
+        $response['data'] = $inputs;
+
+        return $response;
+
+
+
     }
 
     //-------------------------------------------------

@@ -13,7 +13,7 @@ routes_list = {
     props: true,
     children:[
         {
-            path: 'form/:id?:manager_id',
+            path: 'form/:id?',
             name: 'events.form',
             component: Form,
             props: true,
@@ -24,12 +24,7 @@ routes_list = {
             component: Item,
             props: true,
         },
-        // {
-        //     path: 'form/:manager_id?',
-        //     name: 'events.form',
-        //     component: Form,
-        //     props: true,
-        // },
+
     ]
 };
 

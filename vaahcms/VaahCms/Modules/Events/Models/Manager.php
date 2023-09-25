@@ -190,6 +190,16 @@ class Manager extends Model
             $response['messages'][] = "This slug is already exist.";
             return $response;
         }
+
+        $item = self::where('email', $inputs['email'])->withTrashed()->first();
+
+        if ($item) {
+            $response['success'] = false;
+            $response['messages'][] = "This Email is already exist.";
+            return $response;
+        }
+
+
         $item = new self();
         $item->fill($inputs);
         $item->slug = Str::slug($inputs['slug']);
@@ -598,6 +608,10 @@ class Manager extends Model
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
+            'email'=>'required|email',
+            'username'=>'required|max:30',
+            'gender'=>'required',
+            'category'=>'required'
         );
 
         $validator = \Validator::make($inputs, $rules);
@@ -646,24 +660,23 @@ class Manager extends Model
     //-------------------------------------------------
     public static function fillItem()
     {
-        $request = new Request([
-            'model_namespace' => self::class,
-            'except' => self::getUnFillableColumns()
-        ]);
-        $fillable = VaahSeeder::fill($request);
-        if (!$fillable['success']) {
-            return $fillable;
-        }
-        $inputs = $fillable['data']['fill'];
-
         $faker = Factory::create();
+        $inputs = [];
+        $gender = $faker->randomElement(['male', 'female']);
+        $inputs['name'] = $faker->text(25);
+        $inputs['slug'] = Str::slug($inputs['name']);
+        $inputs['username'] =  $faker->text(40);
+        $inputs['email'] =  $faker->email();
+        $inputs['gender']=$gender;
+        $inputs['category']=4;
 
-        /*
-         * You can override the filled variables below this line.
-         * You should also return relationship from here
-         */
 
-        return $inputs;
+        $response['success'] = true;
+        $response['data'] = $inputs;
+
+        return $response;
+
+
     }
 
     //-------------------------------------------------

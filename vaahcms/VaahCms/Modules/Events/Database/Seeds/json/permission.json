@@ -1,0 +1,8 @@
+[
+    {
+        "name": "Can Manage Events",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    }
+]

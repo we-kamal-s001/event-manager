@@ -47,6 +47,8 @@ export const useManagerStore = defineStore({
             delay_time: 600, // time delay in milliseconds
             delay_timer: 0 // time delay in milliseconds
         },
+        disable_edit_button: true,
+        disable_list_button: true,
         route: null,
         watch_stopper: null,
         route_prefix: 'managers.',
@@ -222,6 +224,11 @@ export const useManagerStore = defineStore({
                     this.getItemAfter
                 );
             }
+        },
+        //---------------------------------------------------------------------
+
+        hasPermission(permissions, slug) {
+            return vaah().hasPermission(permissions, slug);
         },
         //---------------------------------------------------------------------
         async getItemAfter(data, res)
@@ -479,6 +486,7 @@ export const useManagerStore = defineStore({
         getFormInputsAfter: function (data, res) {
             if(data)
             {
+                this.item=data;
                 let self = this;
                 Object.keys(data.fill).forEach(function(key) {
                     self.item[key] = data.fill[key];
@@ -596,6 +604,8 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toList()
         {
+            this.disable_edit_button = true;
+
             this.item = vaah().clone(this.assets.empty_item);
             this.$router.push({name: 'managers.index'})
         },
@@ -609,19 +619,27 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(item);
             this.$router.push({name: 'managers.view', params:{id:item.id}})
         },
         //---------------------------------------------------------------------
         toEdit(item)
         {
+            this.disable_edit_button = true;
+            this.disable_list_button = false;
             this.item = item;
             this.$router.push({name: 'managers.form', params:{id:item.id}})
         },
         //---------------------------------------------------------------------
         toEvent(item)
         {
-            this.$router.push({name: 'events.form',params:{manager_id:item.id}})
+            const query = {
+                    manager_id:item.id,
+                    };
+
+            this.$router.push({name: 'events.form',query})
 
         },
         //---------------------------------------------------------------------

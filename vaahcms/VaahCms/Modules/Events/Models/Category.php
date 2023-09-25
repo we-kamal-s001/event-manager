@@ -38,8 +38,13 @@ class Category extends Model {
     //-------------------------------------------------
     public function categoryable()
     {
-        return $this->morphTo()
-    ;}
+        return $this->morphTo();
+    } //-------------------------------------------------
+    public function getTaxonomy()
+    {
+        return $this->belongsTo(Taxonomy::class,'vh_taxonomy_type_id','','')->
+            with('type');
+    }
     //-------------------------------------------------
 
     public function createdByUser()

@@ -18,6 +18,7 @@ let empty_states = {
             is_active: null,
             trashed: null,
             sort: null,
+            filter_by_manager:null,
         },
     },
     action: {
@@ -62,6 +63,8 @@ export const useEventsStore = defineStore({
             action: null,
             is_button_loading: null
         },
+        disable_edit_button: true,
+        disable_list_button: true,
         is_list_loading: null,
         count_filters: 0,
         list_selected_menu: [],
@@ -219,7 +222,7 @@ export const useEventsStore = defineStore({
             if(id)
             {
                 this.item.manager=[];
-                this.item.manager=id;
+                this.item.managers=id;
             }
 
 
@@ -239,9 +242,10 @@ export const useEventsStore = defineStore({
         {
             if(data)
             {
+
                 this.item = data;
                 this.item.category=data.category[0].category_id;
-                this.item.manager=data.manager.id;
+                this.item.managers=data.manager.id;
             }else{
                 this.$router.push({name: 'events.index'});
             }
@@ -477,7 +481,6 @@ export const useEventsStore = defineStore({
                 model_namespace: this.model,
                 except: this.assets.fillable.except,
             };
-
             let url = this.ajax_url+'/fill';
 
             await vaah().ajax(
@@ -489,6 +492,7 @@ export const useEventsStore = defineStore({
         getFormInputsAfter: function (data, res) {
             if(data)
             {
+                this.item=data;
                 let self = this;
                 Object.keys(data.fill).forEach(function(key) {
                     self.item[key] = data.fill[key];
@@ -606,6 +610,7 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         toList()
         {
+            this.disable_edit_button = true;
             this.item = vaah().clone(this.assets.empty_item);
             this.$router.push({name: 'events.index'})
         },
@@ -619,12 +624,16 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(item);
             this.$router.push({name: 'events.view', params:{id:item.id}})
         },
         //---------------------------------------------------------------------
         toEdit(item)
         {
+            this.disable_edit_button = true;
+            this.disable_list_button = false;
             this.item = item;
             this.$router.push({name: 'events.form', params:{id:item.id}})
         },
@@ -632,6 +641,11 @@ export const useEventsStore = defineStore({
         isViewLarge()
         {
             return this.view === 'large';
+        },
+        //---------------------------------------------------------------------
+
+        hasPermission(permissions, slug) {
+            return vaah().hasPermission(permissions, slug);
         },
         //---------------------------------------------------------------------
         getIdWidth()

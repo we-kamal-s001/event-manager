@@ -83,7 +83,7 @@ const toggleCreateMenu = (event) => {
 
                 <template #icons>
 
-                    <div class="p-inputgroup">
+                    <div class="p-inputgroup" v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')">
 
                     <Button data-testid="managers-list-create"
                             class="p-button-sm"

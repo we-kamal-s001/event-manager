@@ -467,5 +467,12 @@
         "module": "vaahcms",
         "section": "user",
         "details": "This will allow user to manage anything in the taxonomy type modal."
+    },
+
+    {
+        "name": "Can Manage Events",
+        "module": "vaahcms",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
     }
 ]

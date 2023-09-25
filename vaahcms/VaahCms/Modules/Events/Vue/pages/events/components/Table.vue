@@ -39,14 +39,14 @@ const useVaah = vaah();
             </Column>
 
 
-             <Column field="type" header="Event Type"
+             <Column field="type" header="Event Category"
                       >
 
                  <template #body="prop">
                      <Badge v-if="prop.data.deleted_at"
                             value="Trashed"
                             severity="danger"></Badge>
-                     {{prop.data.name}}
+                     {{prop.data.category}}
                  </template>
 
              </Column>
@@ -59,7 +59,7 @@ const useVaah = vaah();
                      <Badge v-if="prop.data.deleted_at"
                             value="Trashed"
                             severity="danger"></Badge>
-                     {{prop.data.name}}
+                     {{prop.data.manager.name}}
                  </template>
 
              </Column>
@@ -99,19 +99,33 @@ const useVaah = vaah();
                     :header="store.getActionLabel()">
 
                 <template #body="prop">
-                    <div class="p-inputgroup ">
+                    <div class="p-inputgroup " v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')">
 
                         <Button class="p-button-tiny p-button-text"
                                 data-testid="events-table-to-view"
                                 v-tooltip.top="'View'"
                                 @click="store.toView(prop.data)"
                                 icon="pi pi-eye" />
+                        <div v-if="prop.data.id!==store.item.id" >
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="events-table-to-edit"
+                                    v-tooltip.top="'Update'"
+                                    v-if="store.disable_edit_button!==false"
+                                    @click="store.toEdit(prop.data)"
+                                    icon="pi pi-pencil" />
+                        </div>
+                        <div v-else >
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="events-table-to-edit"
+                                    v-tooltip.top="'Update'"
+                                    :disabled="store.disable_edit_button===true"
+                                    @click="store.toEdit(prop.data)"
+                                    icon="pi pi-pencil" />
+                        </div>
 
-                        <Button class="p-button-tiny p-button-text"
-                                data-testid="events-table-to-edit"
-                                v-tooltip.top="'Update'"
-                                @click="store.toEdit(prop.data)"
-                                icon="pi pi-pencil" />
+
+
+
 
                         <Button class="p-button-tiny p-button-danger p-button-text"
                                 data-testid="events-table-action-trash"

@@ -68,7 +68,10 @@ const useVaah = vaah();
                  <template #body="prop"  @click="store.toEvent">
                      <div class="p-inputgroup" style="display: flex; align-items: center;">
                          <Tag :value="prop.data.events.length" rounded></Tag>
-                         <i class="pi pi-plus p-button-sm" style="color: white; margin-left: 8px; background-color: darkblue; padding: 4px; border-radius: 50%;" @click="store.toEvent(prop.data)"></i>
+                         <i class="pi pi-plus p-button-sm" style="color:
+                          white; margin-left: 8px; background-color:
+                           darkblue; padding: 4px; border-radius: 50%;"
+                            @click="store.toEvent(prop.data)"></i>
                      </div>
 
                  </template>
@@ -121,7 +124,7 @@ const useVaah = vaah();
                     :header="store.getActionLabel()">
 
                 <template #body="prop">
-                    <div class="p-inputgroup ">
+                    <div class="p-inputgroup " v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')">
 
                         <Button class="p-button-tiny p-button-text"
                                 data-testid="managers-table-to-view"
@@ -129,11 +132,28 @@ const useVaah = vaah();
                                 @click="store.toView(prop.data)"
                                 icon="pi pi-eye" />
 
-                        <Button class="p-button-tiny p-button-text"
-                                data-testid="managers-table-to-edit"
-                                v-tooltip.top="'Update'"
-                                @click="store.toEdit(prop.data)"
-                                icon="pi pi-pencil" />
+
+                        <div v-if="prop.data.id!==store.item.id" >
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="events-table-to-edit"
+                                    v-tooltip.top="'Update'"
+                                    v-if="store.disable_edit_button!==false"
+                                    @click="store.toEdit(prop.data)"
+                                    icon="pi pi-pencil" />
+                        </div>
+                        <div v-else >
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="events-table-to-edit"
+                                    v-tooltip.top="'Update'"
+                                    :disabled="store.disable_edit_button===true"
+                                    @click="store.toEdit(prop.data)"
+                                    icon="pi pi-pencil" />
+                        </div>
+
+
+
+
+
 
                         <Button class="p-button-tiny p-button-danger p-button-text"
                                 data-testid="managers-table-action-trash"

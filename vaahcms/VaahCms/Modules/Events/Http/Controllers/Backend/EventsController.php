@@ -5,7 +5,7 @@ use Illuminate\Routing\Controller;
 use VaahCms\Modules\Events\Models\Events;
 use VaahCms\Modules\Events\Models\Manager;
 use WebReinvent\VaahCms\Models\TaxonomyBase;
-
+use WebReinvent\VaahCms\Models\Permission;
 
 class EventsController extends Controller
 {
@@ -26,7 +26,8 @@ class EventsController extends Controller
 
             $data = [];
 
-            $data['permission'] = [];
+            $data['permission'] =\Auth::user()->permissions(true);
+
             $data['rows'] = config('vaahcms.per_page');
 
             $data['fillable']['columns'] = Events::getFillableColumns();

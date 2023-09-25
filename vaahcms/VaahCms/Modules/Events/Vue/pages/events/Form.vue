@@ -14,9 +14,9 @@ onMounted(async () => {
     {
         await store.getItem(route.params.id);
     }
-    if(route.params && route.params.manager_id)
+    if(route.params && route.query.manager_id)
     {
-        await store.manager_id(route.params.manager_id);
+        await store.manager_id(route.query.manager_id);
     }
     await store.getFormMenu();
 });
@@ -129,9 +129,8 @@ const toggleFormMenu = (event) => {
                                data-testid="events-location"
                                v-model="store.item.location"/>
                 </VhField>
-{{store.item.manager}}
                     <VhField label="Manager">
-                    <Dropdown v-model="store.item.manager"
+                    <Dropdown v-model="store.item.managers"
                               :options="store.assets.manager"
                               optionLabel="name"
                               optionValue="id"

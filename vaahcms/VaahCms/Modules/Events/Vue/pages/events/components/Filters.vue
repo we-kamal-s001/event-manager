@@ -46,6 +46,34 @@ const store = useEventsStore();
 
             <VhFieldVertical >
                 <template #label>
+                    <b>Filter Manager</b>
+                </template>
+
+                <div class="field-inputbox">
+                    <MultiSelect v-model="store.query.filter.filter_by_manager"
+                                 :options="store.assets.manager"
+                                 optionLabel="name"
+                                 optionValue="id"
+                                 placeholder="Select Manager"
+                                 :maxSelectedLabels="3"
+                                 class="w-full md:w-20rem" />
+                </div>
+
+<Divider />
+
+            </VhFieldVertical>
+
+
+
+
+
+
+
+
+
+
+            <VhFieldVertical >
+                <template #label>
                     <b>Is Active:</b>
                 </template>
 
