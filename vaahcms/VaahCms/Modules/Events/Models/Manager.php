@@ -100,7 +100,7 @@ class Manager extends Model
     public function category()
     {
         return $this->morphMany(category::class,'categoryable','','','',)
-            ;
+            ->with('getTaxonomy');
     }
 
 
@@ -301,7 +301,7 @@ class Manager extends Model
         if ($request->has('rows')) {
             $rows = $request->rows;
         }
-         $list=$list->with(['events']);
+         $list=$list->with(['events','category']);
         $list = $list->paginate($rows);
 
         $response['success'] = true;

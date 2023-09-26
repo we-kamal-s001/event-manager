@@ -219,12 +219,21 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         async manager_id(id)
         {
+            console.log(id);
             if(id)
             {
                 this.item.manager=[];
                 this.item.managers=id;
             }
 
+
+        },  //---------------------------------------------------------------------
+        async manager_filter(id)
+        {
+            this.route.query.manager_id=null;
+            this.query.filter.filter_by_manager=[id];
+            this.getList();
+            this.route.query.manager_id=null;
 
         },
         //---------------------------------------------------------------------

@@ -233,11 +233,11 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         async getItemAfter(data, res)
         {
-            console.log(229,data.category[0].category_id);
             if(data)
             {
                 this.item = data;
-                this.item.category=data.category[0].category_id;
+                    this.item.category=data.category[0].category_id;
+
 
             }else{
                 this.$router.push({name: 'managers.index'});
@@ -640,6 +640,15 @@ export const useManagerStore = defineStore({
                     };
 
             this.$router.push({name: 'events.form',query})
+
+        }, //---------------------------------------------------------------------
+        toEventFilter(item)
+        {
+            const query = {
+                    manager_id:item.id,
+                    };
+
+            this.$router.push({name: 'events.view',query})
 
         },
         //---------------------------------------------------------------------

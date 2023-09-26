@@ -14,10 +14,6 @@ onMounted(async () => {
     {
         await store.getItem(route.params.id);
     }
-    // if(route.params && route.params.manager_id)
-    // {
-    //    await store.manager_id(route.params.manager_id);
-    // }
     await store.getFormMenu();
 });
 

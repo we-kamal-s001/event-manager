@@ -1,10 +1,20 @@
 <script setup>
 import { vaah } from '../../../vaahvue/pinia/vaah'
 import { useEventsStore } from '../../../stores/store-events'
+import {onMounted} from "vue";
+import {useRoute} from "vue-router";
 
 const store = useEventsStore();
 const useVaah = vaah();
+const route = useRoute();
 
+onMounted(async () => {
+    if(route.params && route.query.manager_id)
+    {
+        await store.manager_filter(route.query.manager_id);
+    }
+    await store.getFormMenu();
+});
 </script>
 
 <template>
@@ -43,12 +53,14 @@ const useVaah = vaah();
                       >
 
                  <template #body="prop">
-                     <Badge v-if="prop.data.deleted_at"
-                            value="Trashed"
-                            severity="danger"></Badge>
-                     {{prop.data.category}}
+                     <DataTable :value="prop.data.category">
+                         <Column>
+                             <template #body="prop">
+                                     {{prop.data.get_taxonomy.name}}
+                             </template>
+                         </Column>
+                     </DataTable>
                  </template>
-
              </Column>
 
 

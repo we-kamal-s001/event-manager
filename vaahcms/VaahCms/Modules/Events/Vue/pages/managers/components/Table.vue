@@ -50,46 +50,45 @@ const useVaah = vaah();
 
              </Column>
 
-             <Column field="username" header="UserName"
-                     >
 
-                 <template #body="prop">
-                     <Badge v-if="prop.data.deleted_at"
-                            value="Trashed"
-                            severity="danger"></Badge>
-                     {{prop.data.username}}
-                 </template>
-
-             </Column>
 
              <Column field="events" header=" Total Events"
              >
 
                  <template #body="prop"  @click="store.toEvent">
                      <div class="p-inputgroup" style="display: flex; align-items: center;">
-                         <Tag :value="prop.data.events.length" rounded></Tag>
-                         <i class="pi pi-plus p-button-sm" style="color:
+                         <Button  style="display: flex; align-items: center;"
+                                  @click="store.toEventFilter(prop.data)"
+                         >
+                             <Tag :value="prop.data.events.length"></Tag>
+
+                         </Button>
+                         <Button class="  p-button-sm" style="color:
                           white; margin-left: 8px; background-color:
                            darkblue; padding: 4px; border-radius: 50%;"
-                            @click="store.toEvent(prop.data)"></i>
+                            v-tooltip.top="'Add Event'"
+                                 icon="pi pi-plus"
+                            @click="store.toEvent(prop.data)"></Button>
                      </div>
 
                  </template>
 
              </Column>
-
-
-             <Column field="gender" header="Gender"
+             <Column field="type" header="Event Category"
              >
 
                  <template #body="prop">
-                     <Badge v-if="prop.data.deleted_at"
-                            value="Trashed"
-                            severity="danger"></Badge>
-                     {{prop.data.gender}}
+                     <DataTable :value="prop.data.category">
+                         <Column>
+                             <template #body="prop">
+                                 {{prop.data.get_taxonomy.name}}
+                             </template>
+                         </Column>
+                     </DataTable>
                  </template>
-
              </Column>
+
+
 
 
                 <Column field="updated_at" header="Updated"

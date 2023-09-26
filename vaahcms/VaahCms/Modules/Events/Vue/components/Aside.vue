@@ -20,15 +20,16 @@ const items = ref([
                 to: "/"
             },
             {
-                label: 'Events',
-                icon: 'fa-regular fa-chart-bar',
-                to: "/events"
-            },
-            {
                 label: 'Managers',
                 icon: 'fa-regular fa-chart-bar',
                 to: "/managers"
             },
+            {
+                label: 'Events',
+                icon: 'fa-regular fa-chart-bar',
+                to: "/events"
+            },
+
         ]
     },
 ]);

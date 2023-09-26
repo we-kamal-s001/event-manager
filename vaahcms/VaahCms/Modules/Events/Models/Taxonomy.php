@@ -14,10 +14,7 @@ use WebReinvent\VaahCms\Libraries\VaahSeeder;
 
 class Taxonomy extends TaxonomyBase
 {
-public function event()
-{
-    return $this->morphMany(eventManager::class,'eventable');
-}
+
 protected function serializeDate(DateTimeInterface $date)
 {
     $date_time_format = config('settings.global.datetime_format');

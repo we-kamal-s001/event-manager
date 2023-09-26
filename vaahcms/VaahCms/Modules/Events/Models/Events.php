@@ -135,11 +135,10 @@ class Events extends Model
             ->with('getTaxonomy');
     }
 
-    public function taxonomyCategory()
+    public function getTaxonomy()
     {
-        return $this->belongsTo(Taxonomy::class);
+        return $this->belongsTo(Taxonomy::class,'category_id', 'vh_taxonomy_type_id');
     }
-
 
     //-------------------------------------------------
     public function getTableColumns()
@@ -317,7 +316,7 @@ class Events extends Model
         if ($request->has('rows')) {
             $rows = $request->rows;
         }
-        $list=$list->with(['manager','category','taxonomyCategory']);
+        $list=$list->with(['manager','category']);
         $list = $list->paginate($rows);
 
         $response['success'] = true;

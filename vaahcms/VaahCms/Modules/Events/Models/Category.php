@@ -11,7 +11,7 @@ class Category extends Model {
 	  use SoftDeletes;
     use CrudWithUuidObservantTrait;
 
-    //-------------------------------------------------
+    //---------------------------------------------getTaxonomy----
     protected $table = 'categorizables';
     //-------------------------------------------------
     protected $dates = [
@@ -40,10 +40,10 @@ class Category extends Model {
     {
         return $this->morphTo();
     } //-------------------------------------------------
+
     public function getTaxonomy()
     {
-        return $this->belongsTo(Taxonomy::class,'vh_taxonomy_type_id','','')->
-            with('type');
+        return $this->belongsTo(Taxonomy::class,'category_id' );
     }
     //-------------------------------------------------
 
