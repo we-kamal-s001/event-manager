@@ -219,21 +219,21 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         async manager_id(id)
         {
-            console.log(id);
             if(id)
             {
+                this.query.filter.filter_by_manager=null;
                 this.item.manager=[];
                 this.item.managers=id;
             }
 
 
         },  //---------------------------------------------------------------------
-        async manager_filter(id)
+        async manager_filter(slug)
         {
             this.route.query.manager_id=null;
-            this.query.filter.filter_by_manager=[id];
+            this.query.filter.filter_by_manager=[slug];
             this.getList();
-            this.route.query.manager_id=null;
+            this.route.query.manager_slug=null;
 
         },
         //---------------------------------------------------------------------
@@ -253,7 +253,7 @@ export const useEventsStore = defineStore({
             {
 
                 this.item = data;
-                this.item.category=data.category[0].category_id;
+                this.item.categories=data.category[0].category_id;
                 this.item.managers=data.manager.id;
             }else{
                 this.$router.push({name: 'events.index'});
@@ -363,6 +363,7 @@ export const useEventsStore = defineStore({
             if(!item)
             {
                 item = this.item;
+
             }
 
             this.form.action = type;
@@ -424,6 +425,7 @@ export const useEventsStore = defineStore({
             await vaah().ajax(
                 ajax_url,
                 this.itemActionAfter,
+
                 options
             );
         },
@@ -433,6 +435,8 @@ export const useEventsStore = defineStore({
             if(data)
             {
                 this.item = data;
+                this.item.categories=data.category[0].category_id;
+                this.item.managers=data.manager.id;
                 await this.getList();
                 await this.formActionAfter();
                 this.getItemMenu();
@@ -626,6 +630,8 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         toForm()
         {
+            this.disable_edit_button = false;
+
             this.item = vaah().clone(this.assets.empty_item);
             this.getFormMenu();
             this.$router.push({name: 'events.form'})
@@ -633,8 +639,7 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
-            this.disable_edit_button = false;
-            this.disable_list_button = true;
+
             this.item = vaah().clone(item);
             this.$router.push({name: 'events.view', params:{id:item.id}})
         },

@@ -137,7 +137,11 @@ const toggleItemMenu = (event) => {
                         <tbody class="p-datatable-tbody">
                         <template v-for="(value, column) in store.item ">
 
-                            <template v-if="column === 'created_by' || column === 'updated_by'">
+                            <template v-if="column === 'created_by' || column === 'updated_by' || column === 'meta'
+                          ||
+                          column === 'categories'||
+                           column === 'category'||
+                           column === 'meta'">
                             </template>
 
                             <template v-else-if="column === 'id' || column === 'uuid'">
@@ -155,6 +159,27 @@ const toggleItemMenu = (event) => {
                                 />
                             </template>
 
+                            <template v-else-if="column === 'slug'">
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                           :can_copy="true"
+                                />
+                                <tr>
+                                    <td>
+                                        <b>
+                                        Category:
+                                        </b>
+                                    </td>
+
+                                    <td>
+                                        <div v-if="store.item.category">
+                                                <li v-for="category in store.item.category" :key="category.id" style="list-style: none;">
+                                                    {{ category.get_taxonomy.name }}
+                                                </li>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
                             <template v-else-if="column === 'is_active'">
                                 <VhViewRow :label="column"
                                            :value="value"
@@ -163,14 +188,9 @@ const toggleItemMenu = (event) => {
                             </template>
 
                             <template v-else-if="column === 'events'">
-                                <panel header="Projects " class="w-33rem">
-                                    <DataTable :value="value" rows="10">
-                                        <Column field="id" header="ID"></Column>
-                                        <Column field="name" header="Event Assign"></Column>
-                                    </DataTable>
 
-                                </panel>
                             </template>
+
                             <template v-else>
                                 <VhViewRow :label="column"
                                            :value="value"

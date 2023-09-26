@@ -205,7 +205,7 @@ class Manager extends Model
         $item->slug = Str::slug($inputs['slug']);
         $item->save();
         $item->category()->create([
-            'category_id'=>$request->category,
+            'category_id'=>$request->categories,
         ]);
 
         $response = self::getItem($item->id);
@@ -501,6 +501,12 @@ class Manager extends Model
             $response['errors'][] = 'Record not found with ID: ' . $id;
             return $response;
         }
+        if (auth()->user()->hasPermission('events-can-update-events') || auth()->user()->hasPermission('events-can-update-manager')
+            || auth()->user()->hasPermission('events-can-view-manager')) {
+
+        } else {
+            $item=null;
+        }
         $response['success'] = true;
         $response['data'] = $item;
 
@@ -545,7 +551,7 @@ class Manager extends Model
         $item->slug = Str::slug($inputs['slug']);
         $item->save();
         $item->category()->update([
-            'category_id'=>$request->category,
+            'category_id'=>$request->categories,
         ]);
         $response = self::getItem($item->id);
         $response['messages'][] = 'Saved successfully.';
@@ -611,7 +617,7 @@ class Manager extends Model
             'email'=>'required|email',
             'username'=>'required|max:30',
             'gender'=>'required',
-            'category'=>'required'
+            'categories'=>'required'
         );
 
         $validator = \Validator::make($inputs, $rules);

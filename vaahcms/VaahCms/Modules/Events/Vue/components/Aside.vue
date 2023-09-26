@@ -25,7 +25,7 @@ const items = ref([
                 to: "/managers"
             },
             {
-                label: 'Events',
+                label: 'Event(s)',
                 icon: 'fa-regular fa-chart-bar',
                 to: "/events"
             },

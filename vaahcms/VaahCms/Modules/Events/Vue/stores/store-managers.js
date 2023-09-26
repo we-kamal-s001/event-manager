@@ -236,9 +236,7 @@ export const useManagerStore = defineStore({
             if(data)
             {
                 this.item = data;
-                    this.item.category=data.category[0].category_id;
-
-
+                    this.item.categories=data.category[0].category_id;
             }else{
                 this.$router.push({name: 'managers.index'});
             }
@@ -619,8 +617,7 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
-            this.disable_edit_button = false;
-            this.disable_list_button = true;
+            this.disable_edit_button = true;
             this.item = vaah().clone(item);
             this.$router.push({name: 'managers.view', params:{id:item.id}})
         },
@@ -645,9 +642,8 @@ export const useManagerStore = defineStore({
         toEventFilter(item)
         {
             const query = {
-                    manager_id:item.id,
+                    manager_slug:item.slug,
                     };
-
             this.$router.push({name: 'events.view',query})
 
         },

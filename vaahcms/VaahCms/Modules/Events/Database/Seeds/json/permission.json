@@ -4,5 +4,47 @@
         "module": "Events",
         "section": "user",
         "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can Update Events",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can View Events",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can Delete Events",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can Manage Manager",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can Update Manager",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can View Manager",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
+    },
+    {
+        "name": "Can Delete Manager",
+        "module": "Events",
+        "section": "user",
+        "details": "This will allow user to create and update the events."
     }
 ]

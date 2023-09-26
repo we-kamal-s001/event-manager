@@ -114,8 +114,8 @@ const toggleFormMenu = (event) => {
                                data-testid="events-slug"
                                v-model="store.item.slug"/>
                 </VhField>
-                <VhField label="Category" class="w-23rem" >
-                    <Dropdown v-model="store.item.category"
+                <VhField label="Category" >
+                    <Dropdown v-model="store.item.categories"
                               :options="store.assets.category"
                               optionLabel="name"
                               optionValue="id"

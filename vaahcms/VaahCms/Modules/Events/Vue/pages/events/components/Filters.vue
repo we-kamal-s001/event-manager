@@ -48,12 +48,11 @@ const store = useEventsStore();
                 <template #label>
                     <b>Filter Manager</b>
                 </template>
-
                 <div class="field-inputbox">
                     <MultiSelect v-model="store.query.filter.filter_by_manager"
                                  :options="store.assets.manager"
                                  optionLabel="name"
-                                 optionValue="id"
+                                 optionValue="slug"
                                  placeholder="Select Manager"
                                  :maxSelectedLabels="3"
                                  class="w-full md:w-20rem" />

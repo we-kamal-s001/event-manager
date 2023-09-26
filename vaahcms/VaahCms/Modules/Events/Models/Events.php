@@ -137,7 +137,7 @@ class Events extends Model
 
     public function getTaxonomy()
     {
-        return $this->belongsTo(Taxonomy::class,'category_id', 'vh_taxonomy_type_id');
+        return $this->belongsTo(Taxonomy::class, 'category_id', 'vh_taxonomy_type_id');
     }
 
     //-------------------------------------------------
@@ -175,6 +175,7 @@ class Events extends Model
     //-------------------------------------------------
     public static function createItem($request)
     {
+
         $inputs = $request->all();
 
         $validation = self::validation($inputs);
@@ -207,7 +208,7 @@ class Events extends Model
         $item->manager_id = $request->managers;
         $item->save();
         $item->category()->create([
-            'category_id' => $request->category,
+            'category_id' => $request->categories,
         ]);
 
 
@@ -290,6 +291,7 @@ class Events extends Model
         });
 
     }  //-------------------------------------------------
+
     public function scopeManagerFilter($query, $filter)
     {
 
@@ -297,10 +299,10 @@ class Events extends Model
             return $query;
         }
         $search = $filter['filter_by_manager'];
-        $query->where(function ($q) use ($search) {
-            $q->whereIn('manager_id', $search);
-        });
 
+        $query->whereHas('manager', function ($query) use ($search) {
+            $query->whereIn('slug', $search);
+        });
     }
 
     //-------------------------------------------------
@@ -316,7 +318,7 @@ class Events extends Model
         if ($request->has('rows')) {
             $rows = $request->rows;
         }
-        $list=$list->with(['manager','category']);
+        $list = $list->with(['manager', 'category']);
         $list = $list->paginate($rows);
 
         $response['success'] = true;
@@ -516,6 +518,12 @@ class Events extends Model
             $response['errors'][] = 'Record not found with ID: ' . $id;
             return $response;
         }
+        if (auth()->user()->hasPermission('events-can-update-events') || auth()->user()->hasPermission('events-can-manage-events')
+            || auth()->user()->hasPermission('events-can-view-events')) {
+
+        } else {
+            $item=null;
+        }
         $response['success'] = true;
         $response['data'] = $item;
         return $response;
@@ -557,10 +565,11 @@ class Events extends Model
         $item = self::where('id', $id)->withTrashed()->first();
         $item->fill($inputs);
         $item->slug = Str::slug($inputs['slug']);
-        $item->manager_id = $request->manager;
+        $item->manager_id = $request->managers;
+
         $item->save();
         $item->category()->update([
-            'category_id' => $request->category,
+            'category_id' => $request->categories,
         ]);
 
         $response = self::getItem($item->id);
@@ -624,10 +633,10 @@ class Events extends Model
         $rules = array(
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
-            'category'=>'required',
-            'location'=>'required|max:150',
-            'managers'=>'required',
-            'date'=>'required'
+            'categories' => 'required',
+            'location' => 'required|max:150',
+            'managers' => 'required',
+            'date' => 'required'
         );
 
         $validator = \Validator::make($inputs, $rules);
@@ -684,16 +693,15 @@ class Events extends Model
 
         $inputs['name'] = $faker->text(25);
         $inputs['slug'] = Str::slug($inputs['name']);
-        $inputs['location'] =  $faker->country();
-        $inputs['date'] =  $faker->date();
-        $inputs['category']=4;
-        $inputs['manager']=$selected_manager;
+        $inputs['location'] = $faker->country();
+        $inputs['date'] = $faker->date();
+        $inputs['categories'] = 4;
+        $inputs['managers'] = $selected_manager;
 
         $response['success'] = true;
         $response['data'] = $inputs;
 
         return $response;
-
 
 
     }

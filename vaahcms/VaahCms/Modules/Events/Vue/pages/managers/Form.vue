@@ -146,7 +146,7 @@ const genders = ref([
 
 
                 <VhField label="Category">
-                    <Dropdown v-model="store.item.category"
+                    <Dropdown v-model="store.item.categories"
                               :options="store.assets.category"
                               optionLabel="name"
                               optionValue="id"

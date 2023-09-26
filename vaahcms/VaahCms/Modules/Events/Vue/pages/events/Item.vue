@@ -2,9 +2,10 @@
 import {onMounted, ref, watch} from "vue";
 import {useRoute} from 'vue-router';
 
-import { useEventsStore } from '../../stores/store-events'
+import {useEventsStore} from '../../stores/store-events'
 
 import VhViewRow from '../../vaahvue/vue-three/primeflex/VhViewRow.vue';
+
 const store = useEventsStore();
 const route = useRoute();
 
@@ -14,8 +15,7 @@ onMounted(async () => {
      * If record id is not set in url then
      * redirect user to list view
      */
-    if(route.params && !route.params.id)
-    {
+    if (route.params && !route.params.id) {
         store.toList();
         return false;
     }
@@ -23,8 +23,7 @@ onMounted(async () => {
     /**
      * Fetch the record from the database
      */
-    if(!store.item || Object.keys(store.item).length < 1)
-    {
+    if (!store.item || Object.keys(store.item).length < 1) {
         await store.getItem(route.params.id);
     }
 
@@ -56,7 +55,7 @@ const toggleItemMenu = (event) => {
 </script>
 <template>
 
-    <div class="col-6" >
+    <div class="col-6">
 
         <Panel class="is-small" v-if="store && store.item">
 
@@ -93,7 +92,7 @@ const toggleItemMenu = (event) => {
 
                     <Menu ref="item_menu_state"
                           :model="store.item_menu_list"
-                          :popup="true" />
+                          :popup="true"/>
                     <!--/item_menu-->
 
                     <Button class="p-button-primary p-button-sm"
@@ -102,7 +101,6 @@ const toggleItemMenu = (event) => {
                             @click="store.toList()"/>
 
                 </div>
-
 
 
             </template>
@@ -135,60 +133,80 @@ const toggleItemMenu = (event) => {
                 </Message>
 
                 <div class="p-datatable p-component p-datatable-responsive-scroll p-datatable-striped p-datatable-sm">
-                <table class="p-datatable-table">
-                    <tbody class="p-datatable-tbody">
-                    <template v-for="(value, column) in store.item ">
+                    <table class="p-datatable-table">
+                        <tbody class="p-datatable-tbody">
+                        <template v-for="(value, column) in store.item ">
 
-                        <template v-if="column === 'created_by' || column === 'updated_by'">
+                            <template v-if="column === 'created_by' || column === 'updated_by'
+                        || column === 'managers'
+                        ||column === 'manager_id' ||column === 'manager'
+                        ||column === 'category'  ||column === 'categories'
+                                ||column === 'meta'">
+                            </template>
+
+                            <template v-else-if="column === 'id' || column === 'uuid'">
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                           :can_copy="true"
+                                />
+                            </template>
+
+                            <template v-else-if="column === 'slug'">
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                           :can_copy="true"
+                                />
+<!--                                <VhViewRow label="Manager "-->
+<!--                                           :value="store.item.managers.name"-->
+<!--                                />-->
+
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Category
+                                        </b>
+                                    </td>
+
+                                    <td>
+                                        <div v-if="store.item.category">
+                                            <li v-for="category in store.item.category" :key="category.id" style="list-style: none;">
+                                                {{ category.get_taxonomy.name }}
+                                            </li>
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                            </template>
+
+
+                            <template v-else-if="(column === 'created_by_user' || column === 'updated_by_user'
+                         || column === 'deleted_by_user') && (typeof value === 'object' && value !== null)">
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                           type="user"
+                                />
+                            </template>
+
+                            <template v-else-if="column === 'is_active'">
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                           type="yes-no"
+                                />
+                            </template>
+
+
+                            <template v-else>
+                                <VhViewRow :label="column"
+                                           :value="value"
+                                />
+                            </template>
+
+
                         </template>
+                        </tbody>
 
-                        <template v-else-if="column === 'id' || column === 'uuid'">
-                            <VhViewRow :label="column"
-                                       :value="value"
-                                       :can_copy="true"
-                            />
-                        </template>
-
-<!--                        <template v-else-if="column === 'manager'">-->
-<!--                            <VhViewRow label="Manager Name"-->
-<!--                                       :value="store.item.manager.name"-->
-<!--                                       :can_copy="true"-->
-<!--                            />-->
-<!--                        </template>-->
-
-                        <template v-else-if="(column === 'created_by_user' || column === 'updated_by_user'  || column === 'deleted_by_user') && (typeof value === 'object' && value !== null)">
-                            <VhViewRow :label="column"
-                                       :value="value"
-                                       type="user"
-                            />
-                        </template>
-
-                        <template v-else-if="column === 'is_active'">
-                            <VhViewRow :label="column"
-                                       :value="value"
-                                       type="yes-no"
-                            />
-                        </template>
-
-
-                        <template v-else-if="column === 'managers'">
-                            <VhViewRow :label="null"
-                                       :value="null"
-
-                            />
-                        </template>
-
-                        <template v-else>
-                            <VhViewRow :label="column"
-                                       :value="value"
-                                       />
-                        </template>
-
-
-                    </template>
-                    </tbody>
-
-                </table>
+                    </table>
 
                 </div>
             </div>
