@@ -342,6 +342,8 @@ export const useManagerStore = defineStore({
         },
         //---------------------------------------------------------------------
         async itemAction(type, item=null){
+            this.disable_edit_button = false;
+            this.disable_list_button = false;
             if(!item)
             {
                 item = this.item;
@@ -416,10 +418,11 @@ export const useManagerStore = defineStore({
             {
                 this.item = data;
                 this.item.categories=data.category[0].category_id;
-
                 await this.getList();
                 await this.formActionAfter();
+                this.getFormMenu();
                 this.getItemMenu();
+
             }
         },
         //---------------------------------------------------------------------
@@ -450,6 +453,8 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         async toggleIsActive(item)
         {
+            this.disable_edit_button = false;
+            this.disable_list_button = false;
             if(item.is_active)
             {
                 await this.itemAction('activate', item);
@@ -619,7 +624,8 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
-            this.disable_edit_button = true;
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(item);
             this.$router.push({name: 'managers.view', params:{id:item.id}})
         },

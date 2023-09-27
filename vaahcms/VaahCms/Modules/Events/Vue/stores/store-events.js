@@ -18,7 +18,7 @@ let empty_states = {
             is_active: null,
             trashed: null,
             sort: null,
-            filter_by_manager:null,
+            filter_by_manager: null,
         },
     },
     action: {
@@ -36,16 +36,16 @@ export const useEventsStore = defineStore({
         assets_is_fetching: true,
         app: null,
         assets: null,
-        rows_per_page: [10,20,30,50,100,500],
+        rows_per_page: [10, 20, 30, 50, 100, 500],
         list: null,
         item:
             {
-                manager:null,
+                manager: null,
 
             },
-        fillable:null,
-        empty_query:empty_states.query,
-        empty_action:empty_states.action,
+        fillable: null,
+        empty_query: empty_states.query,
+        empty_action: empty_states.action,
         query: vaah().clone(empty_states.query),
         action: vaah().clone(empty_states.action),
         search: {
@@ -74,13 +74,10 @@ export const useEventsStore = defineStore({
         item_menu_state: null,
         form_menu_list: []
     }),
-    getters: {
-
-    },
+    getters: {},
     actions: {
         //---------------------------------------------------------------------
-        async onLoad(route)
-        {
+        async onLoad(route) {
             /**
              * Set initial routes
              */
@@ -97,10 +94,8 @@ export const useEventsStore = defineStore({
             this.updateQueryFromUrl(route);
         },
         //---------------------------------------------------------------------
-        setViewAndWidth(route_name)
-        {
-            switch(route_name)
-            {
+        setViewAndWidth(route_name) {
+            switch (route_name) {
                 case 'events.index':
                     this.view = 'large';
                     this.list_view_width = 12;
@@ -112,14 +107,10 @@ export const useEventsStore = defineStore({
             }
         },
         //---------------------------------------------------------------------
-        async updateQueryFromUrl(route)
-        {
-            if(route.query)
-            {
-                if(Object.keys(route.query).length > 0)
-                {
-                    for(let key in route.query)
-                    {
+        async updateQueryFromUrl(route) {
+            if (route.query) {
+                if (Object.keys(route.query).length > 0) {
+                    for (let key in route.query) {
                         this.query[key] = route.query[key]
                     }
                     this.countFilters(route.query);
@@ -127,13 +118,11 @@ export const useEventsStore = defineStore({
             }
         },
         //---------------------------------------------------------------------
-        watchRoutes(route)
-        {
+        watchRoutes(route) {
             //watch routes
-            this.watch_stopper = watch(route, (newVal,oldVal) =>
-                {
+            this.watch_stopper = watch(route, (newVal, oldVal) => {
 
-                    if(this.watch_stopper && !newVal.name.includes(this.route_prefix)){
+                    if (this.watch_stopper && !newVal.name.includes(this.route_prefix)) {
                         this.watch_stopper();
 
                         return false;
@@ -141,61 +130,53 @@ export const useEventsStore = defineStore({
 
                     this.route = newVal;
 
-                    if(newVal.params.id){
+                    if (newVal.params.id) {
                         this.getItem(newVal.params.id);
                     }
 
                     this.setViewAndWidth(newVal.name);
 
-                }, { deep: true }
+                }, {deep: true}
             )
         },
         //---------------------------------------------------------------------
-        watchStates()
-        {
-            watch(this.query.filter, (newVal,oldVal) =>
-                {
+        watchStates() {
+            watch(this.query.filter, (newVal, oldVal) => {
                     this.delayedSearch();
-                },{deep: true}
+                }, {deep: true}
             )
         },
         //---------------------------------------------------------------------
-         watchItem(name)
-          {
-              if(name==="")
-              {
-                  this.item.slug="";
-              }
-              if(name && name !== "")
-              {
-                  this.item.name = vaah().capitalising(name);
-                  this.item.slug = vaah().strToSlug(name);
-              }
-          },
+        watchItem(name) {
+            if (name === "") {
+                this.item.slug = "";
+            }
+            if (name && name !== "") {
+                this.item.name = vaah().capitalising(name);
+                this.item.slug = vaah().strToSlug(name);
+            }
+        },
         //---------------------------------------------------------------------
         async getAssets() {
 
-            if(this.assets_is_fetching === true){
+            if (this.assets_is_fetching === true) {
                 this.assets_is_fetching = false;
 
                 await vaah().ajax(
-                    this.ajax_url+'/assets',
+                    this.ajax_url + '/assets',
                     this.afterGetAssets,
                 );
             }
         },
         //---------------------------------------------------------------------
-        afterGetAssets(data, res)
-        {
-            if(data)
-            {
+        afterGetAssets(data, res) {
+            if (data) {
                 this.assets = data;
-                if(data.rows)
-                {
+                if (data.rows) {
                     this.query.rows = data.rows;
                 }
 
-                if(this.route.params && !this.route.params.id){
+                if (this.route.params && !this.route.params.id) {
                     this.item = vaah().clone(data.empty_item);
                 }
 
@@ -213,70 +194,60 @@ export const useEventsStore = defineStore({
             );
         },
         //---------------------------------------------------------------------
-        afterGetList: function (data, res)
-        {
-            if(data)
-            {
+        afterGetList: function (data, res) {
+            if (data) {
                 this.list = data;
             }
         },
         //---------------------------------------------------------------------
-        async managerId(id)
-        {
-            if(id)
-            {
-                this.query.filter.filter_by_manager=null;
-                this.item.manager=[];
-                this.item.managers=id;
+        async managerId(id) {
+            if (id) {
+                this.query.filter.filter_by_manager = null;
+                this.item.manager = [];
+                this.item.managers = id;
             }
 
 
         },  //---------------------------------------------------------------------
-        async managerFilter(slug)
-        {
-            this.route.query.manager_id=null;
-            this.query.filter.filter_by_manager=[slug];
+        async managerFilter(slug) {
+            this.route.query.manager_id = null;
+            this.query.filter.filter_by_manager = [slug];
             this.getList();
-            this.route.query.manager_slug=null;
+            this.route.query.manager_slug = null;
 
         },
         //---------------------------------------------------------------------
 
         async getItem(id) {
-            if(id){
+            if (id) {
                 await vaah().ajax(
-                    ajax_url+'/'+id,
+                    ajax_url + '/' + id,
                     this.getItemAfter
                 );
             }
         },
         //---------------------------------------------------------------------
-        async getItemAfter(data, res)
-        {
-            if(data)
-            {
+        async getItemAfter(data, res) {
+            if (data) {
 
                 this.item = data;
-                this.item.categories=data.category[0].category_id;
-                this.item.managers=data.manager.id;
-            }else{
+                this.item.categories = data.category[0].category_id;
+                this.item.managers = data.manager.id;
+            } else {
                 this.$router.push({name: 'events.index'});
             }
             await this.getItemMenu();
             await this.getFormMenu();
         },
         //---------------------------------------------------------------------
-        isListActionValid()
-        {
+        isListActionValid() {
 
-            if(!this.action.type)
-            {
+            if (!this.action.type) {
                 vaah().toastErrors(['Select an action type']);
                 return false;
             }
 
-            if(this.action.items.length < 1)
-            {
+            if (this.action.items.length < 1) {
                 vaah().toastErrors(['Select records']);
                 return false;
             }
@@ -284,25 +255,22 @@ export const useEventsStore = defineStore({
             return true;
         },
         //---------------------------------------------------------------------
-        async updateList(type = null){
+        async updateList(type = null) {
 
-            if(!type && this.action.type)
-            {
+            if (!type && this.action.type) {
                 type = this.action.type;
-            } else{
+            } else {
                 this.action.type = type;
             }
 
-            if(!this.isListActionValid())
-            {
+            if (!this.isListActionValid()) {
                 return false;
             }
 
 
             let method = 'PUT';
 
-            switch (type)
-            {
+            switch (type) {
                 case 'delete':
                     method = 'DELETE';
                     break;
@@ -321,27 +289,24 @@ export const useEventsStore = defineStore({
         },
         //---------------------------------------------------------------------
         async updateListAfter(data, res) {
-            if(data)
-            {
+            if (data) {
                 this.action = vaah().clone(this.empty_action);
                 await this.getList();
             }
         },
         //---------------------------------------------------------------------
-        async listAction(type = null){
+        async listAction(type = null) {
 
-            if(!type && this.action.type)
-            {
+            if (!type && this.action.type) {
                 type = this.action.type;
-            } else{
+            } else {
                 this.action.type = type;
             }
 
-            let url = this.ajax_url+'/action/'+type
+            let url = this.ajax_url + '/action/' + type
             let method = 'PUT';
 
-            switch (type)
-            {
+            switch (type) {
                 case 'delete':
                     url = this.ajax_url
                     method = 'DELETE';
@@ -363,9 +328,11 @@ export const useEventsStore = defineStore({
             );
         },
         //---------------------------------------------------------------------
-        async itemAction(type, item=null){
-            if(!item)
-            {
+        async itemAction(type, item = null) {
+
+            this.disable_edit_button = false;
+            this.disable_list_button = false;
+            if (!item) {
                 item = this.item;
 
             }
@@ -382,8 +349,7 @@ export const useEventsStore = defineStore({
              * Learn more about http request methods at
              * https://www.youtube.com/watch?v=tkfVQK6UxDI
              */
-            switch (type)
-            {
+            switch (type) {
                 /**
                  * Create a record, hence method is `POST`
                  * https://docs.vaah.dev/guide/laravel.html#create-one-or-many-records
@@ -404,7 +370,7 @@ export const useEventsStore = defineStore({
                 case 'save-and-clone':
                     options.method = 'PUT';
                     options.params = item;
-                    ajax_url += '/'+item.id
+                    ajax_url += '/' + item.id
                     break;
                 /**
                  * Delete a record, hence method is `DELETE`
@@ -413,7 +379,7 @@ export const useEventsStore = defineStore({
                  */
                 case 'delete':
                     options.method = 'DELETE';
-                    ajax_url += '/'+item.id
+                    ajax_url += '/' + item.id
                     break;
                 /**
                  * Update a record's one column or very few columns,
@@ -422,7 +388,7 @@ export const useEventsStore = defineStore({
                  */
                 default:
                     options.method = 'PATCH';
-                    ajax_url += '/'+item.id+'/action/'+type;
+                    ajax_url += '/' + item.id + '/action/' + type;
                     break;
             }
 
@@ -434,23 +400,20 @@ export const useEventsStore = defineStore({
             );
         },
         //---------------------------------------------------------------------
-        async itemActionAfter(data, res)
-        {
-            if(data)
-            {
+        async itemActionAfter(data, res) {
+            if (data) {
                 this.item = data;
-                this.item.categories=data.category[0].category_id;
-                this.item.managers=data.manager.id;
+                this.item.categories = data.category[0].category_id;
+                this.item.managers = data.manager.id;
                 await this.getList();
                 await this.formActionAfter();
+                this.getFormMenu();
                 this.getItemMenu();
             }
         },
         //---------------------------------------------------------------------
-        async formActionAfter ()
-        {
-            switch (this.form.action)
-            {
+        async formActionAfter() {
+            switch (this.form.action) {
                 case 'create-and-new':
                 case 'save-and-new':
                     this.setActiveItemAsEmpty();
@@ -472,33 +435,32 @@ export const useEventsStore = defineStore({
             }
         },
         //---------------------------------------------------------------------
-        async toggleIsActive(item)
-        {
-            if(item.is_active)
-            {
+        async toggleIsActive(item) {
+            this.disable_edit_button = false;
+            this.disable_list_button = false;
+            if (item.is_active) {
                 await this.itemAction('activate', item);
-            } else{
+            } else {
                 await this.itemAction('deactivate', item);
             }
         },
         //---------------------------------------------------------------------
         async paginate(event) {
-            this.query.page = event.page+1;
+            this.query.page = event.page + 1;
             await this.getList();
         },
         //---------------------------------------------------------------------
-        async reload()
-        {
+        async reload() {
             await this.getAssets();
             await this.getList();
         },
         //---------------------------------------------------------------------
-        async getFormInputs () {
+        async getFormInputs() {
             let params = {
                 model_namespace: this.model,
                 except: this.assets.fillable.except,
             };
-            let url = this.ajax_url+'/fill';
+            let url = this.ajax_url + '/fill';
 
             await vaah().ajax(
                 url,
@@ -507,11 +469,10 @@ export const useEventsStore = defineStore({
         },
         //---------------------------------------------------------------------
         getFormInputsAfter: function (data, res) {
-            if(data)
-            {
-                this.item=data;
+            if (data) {
+                this.item = data;
                 let self = this;
-                Object.keys(data.fill).forEach(function(key) {
+                Object.keys(data.fill).forEach(function (key) {
                     self.item[key] = data.fill[key];
                 });
             }
@@ -520,20 +481,16 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
 
         //---------------------------------------------------------------------
-        onItemSelection(items)
-        {
+        onItemSelection(items) {
             this.action.items = items;
         },
         //---------------------------------------------------------------------
-        setActiveItemAsEmpty()
-        {
+        setActiveItemAsEmpty() {
             this.item = vaah().clone(this.assets.empty_item);
         },
         //---------------------------------------------------------------------
-        confirmDelete()
-        {
-            if(this.action.items.length < 1)
-            {
+        confirmDelete() {
+            if (this.action.items.length < 1) {
                 vaah().toastErrors(['Select a record']);
                 return false;
             }
@@ -541,26 +498,23 @@ export const useEventsStore = defineStore({
             vaah().confirmDialogDelete(this.listAction);
         },
         //---------------------------------------------------------------------
-        confirmDeleteAll()
-        {
+        confirmDeleteAll() {
             this.action.type = 'delete-all';
             vaah().confirmDialogDelete(this.listAction);
         },
         //---------------------------------------------------------------------
-        async delayedSearch()
-        {
+        async delayedSearch() {
             let self = this;
             this.query.page = 1;
             this.action.items = [];
             clearTimeout(this.search.delay_timer);
-            this.search.delay_timer = setTimeout(async function() {
+            this.search.delay_timer = setTimeout(async function () {
                 await self.updateUrlQueryString(self.query);
                 await self.getList();
             }, this.search.delay_time);
         },
         //---------------------------------------------------------------------
-        async updateUrlQueryString(query)
-        {
+        async updateUrlQueryString(query) {
             //remove reactivity from source object
             query = vaah().clone(query)
 
@@ -570,7 +524,7 @@ export const useEventsStore = defineStore({
             });
             let query_object = qs.parse(query_string);
 
-            if(query_object.filter){
+            if (query_object.filter) {
                 query_object.filter = vaah().cleanObject(query_object.filter);
             }
 
@@ -585,25 +539,21 @@ export const useEventsStore = defineStore({
 
         },
         //---------------------------------------------------------------------
-        countFilters: function (query)
-        {
+        countFilters: function (query) {
             this.count_filters = 0;
-            if(query && query.filter)
-            {
+            if (query && query.filter) {
                 let filter = vaah().cleanObject(query.filter);
                 this.count_filters = Object.keys(filter).length;
             }
         },
         //---------------------------------------------------------------------
-        async clearSearch()
-        {
+        async clearSearch() {
             this.query.filter.q = null;
             await this.updateUrlQueryString(this.query);
             await this.getList();
         },
         //---------------------------------------------------------------------
-        async resetQuery()
-        {
+        async resetQuery() {
             //reset query strings
             await this.resetQueryString();
 
@@ -611,53 +561,50 @@ export const useEventsStore = defineStore({
             await this.getList();
         },
         //---------------------------------------------------------------------
-        async resetQueryString()
-        {
-            for(let key in this.query.filter)
-            {
+        async resetQueryString() {
+            for (let key in this.query.filter) {
                 this.query.filter[key] = null;
             }
             await this.updateUrlQueryString(this.query);
         },
         //---------------------------------------------------------------------
-        closeForm()
-        {
+        closeForm() {
             this.$router.push({name: 'events.index'})
         },
         //---------------------------------------------------------------------
-        toList()
-        {
+        toList() {
             this.disable_edit_button = true;
+            this.disable_list_button = true;
             this.item = vaah().clone(this.assets.empty_item);
             this.$router.push({name: 'events.index'})
         },
         //---------------------------------------------------------------------
-        toForm()
-        {
-            this.disable_edit_button = false;
+        toForm() {
 
             this.item = vaah().clone(this.assets.empty_item);
             this.getFormMenu();
             this.$router.push({name: 'events.form'})
         },
         //---------------------------------------------------------------------
-        toView(item)
-        {
-
+        toView(item) {
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(item);
-            this.$router.push({name: 'events.view', params:{id:item.id}})
+            this.$router.push({name: 'events.view', params: {id: item.id}})
         },
         //---------------------------------------------------------------------
-        toEdit(item)
-        {
+        toEdit(item) {
+            this.item.categories = item.category[0].category_id;
+            console.log(597,this.item.categories)
+
+            this.item.managers = item.manager.id;
             this.disable_edit_button = true;
             this.disable_list_button = false;
             this.item = item;
-            this.$router.push({name: 'events.form', params:{id:item.id}})
+            this.$router.push({name: 'events.form', params: {id: item.id}})
         },
         //---------------------------------------------------------------------
-        isViewLarge()
-        {
+        isViewLarge() {
             return this.view === 'large';
         },
         //---------------------------------------------------------------------
@@ -666,43 +613,36 @@ export const useEventsStore = defineStore({
             return vaah().hasPermission(permissions, slug);
         },
         //---------------------------------------------------------------------
-        getIdWidth()
-        {
+        getIdWidth() {
             let width = 50;
 
-            if(this.list && this.list.total)
-            {
+            if (this.list && this.list.total) {
                 let chrs = this.list.total.toString();
                 chrs = chrs.length;
-                width = chrs*40;
+                width = chrs * 40;
             }
 
-            return width+'px';
+            return width + 'px';
         },
         //---------------------------------------------------------------------
-        getActionWidth()
-        {
+        getActionWidth() {
             let width = 100;
-            if(!this.isViewLarge())
-            {
+            if (!this.isViewLarge()) {
                 width = 80;
             }
-            return width+'px';
+            return width + 'px';
         },
         //---------------------------------------------------------------------
-        getActionLabel()
-        {
+        getActionLabel() {
             let text = null;
-            if(this.isViewLarge())
-            {
+            if (this.isViewLarge()) {
                 text = 'Actions';
             }
 
             return text;
         },
         //---------------------------------------------------------------------
-        async getListSelectedMenu()
-        {
+        async getListSelectedMenu() {
             this.list_selected_menu = [
                 {
                     label: 'Activate',
@@ -744,8 +684,7 @@ export const useEventsStore = defineStore({
 
         },
         //---------------------------------------------------------------------
-        getListBulkMenu()
-        {
+        getListBulkMenu() {
             this.list_bulk_menu = [
                 {
                     label: 'Mark all as active',
@@ -786,12 +725,10 @@ export const useEventsStore = defineStore({
             ];
         },
         //---------------------------------------------------------------------
-        getItemMenu()
-        {
+        getItemMenu() {
             let item_menu = [];
 
-            if(this.item && this.item.deleted_at)
-            {
+            if (this.item && this.item.deleted_at) {
 
                 item_menu.push({
                     label: 'Restore',
@@ -802,8 +739,7 @@ export const useEventsStore = defineStore({
                 });
             }
 
-            if(this.item && this.item.id && !this.item.deleted_at)
-            {
+            if (this.item && this.item.id && !this.item.deleted_at) {
                 item_menu.push({
                     label: 'Trash',
                     icon: 'pi pi-times',
@@ -824,8 +760,7 @@ export const useEventsStore = defineStore({
             this.item_menu_list = item_menu;
         },
         //---------------------------------------------------------------------
-        async getListCreateMenu()
-        {
+        async getListCreateMenu() {
             let form_menu = [];
 
             form_menu.push(
@@ -857,7 +792,6 @@ export const useEventsStore = defineStore({
                         this.listAction('create-10000-records');
                     }
                 },
-
             )
 
             this.list_create_menu = form_menu;
@@ -865,23 +799,19 @@ export const useEventsStore = defineStore({
         },
 
         //---------------------------------------------------------------------
-        confirmDeleteItem()
-        {
+        confirmDeleteItem() {
             this.form.type = 'delete';
             vaah().confirmDialogDelete(this.confirmDeleteItemAfter);
         },
         //---------------------------------------------------------------------
-        confirmDeleteItemAfter()
-        {
+        confirmDeleteItemAfter() {
             this.itemAction('delete', this.item);
         },
         //---------------------------------------------------------------------
-        async getFormMenu()
-        {
+        async getFormMenu() {
             let form_menu = [];
 
-            if(this.item && this.item.id)
-            {
+            if (this.item && this.item.id) {
                 form_menu = [
                     {
                         label: 'Save & Close',
@@ -904,6 +834,7 @@ export const useEventsStore = defineStore({
                         label: 'Trash',
                         icon: 'pi pi-times',
                         command: () => {
+
                             this.itemAction('trash');
                         }
                     },
@@ -916,7 +847,7 @@ export const useEventsStore = defineStore({
                     },
                 ];
 
-            } else{
+            } else {
                 form_menu = [
                     {
                         label: 'Create & Close',
@@ -953,12 +884,10 @@ export const useEventsStore = defineStore({
             },)
 
             this.form_menu_list = form_menu;
-
         },
         //---------------------------------------------------------------------
     }
 });
-
 
 
 // Pinia hot reload

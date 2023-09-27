@@ -108,21 +108,31 @@ const useVaah = vaah();
                 <template #body="prop">
                     <div class="p-inputgroup "
                     >
-
-                        <Button class="p-button-tiny p-button-text"
-                                data-testid="managers-table-to-view"
-                                v-tooltip.top="'View'"
-                                v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
+                        <div v-if="prop.data.id!==store.item.id && store.disable_list_button!==false">
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="credentials-table-to-view"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
                                 ||store.hasPermission(store.assets.permission,'events-can-view-manager')"
-                                @click="store.toView(prop.data)"
-                                icon="pi pi-eye"/>
-
+                                    v-tooltip.top="'View'"
+                                    @click="store.toView(prop.data)"
+                                    icon="pi pi-eye"/>
+                        </div>
+                        <div v-else>
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="credentials-table-to-view"
+                                    v-tooltip.top="'View'"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
+                                     ||store.hasPermission(store.assets.permission,'events-can-view-manager')"
+                                    :disabled="store.disable_list_button===true"
+                                    @click="store.toView(prop.data)"
+                                    icon="pi pi-eye"/>
+                        </div>
 
                         <div v-if="prop.data.id!==store.item.id">
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="events-table-to-edit"
                                     v-tooltip.top="'Update'"
-                                    v-if="store.disable_edit_button!==false &&
+                                    v-if="
                                     store.hasPermission(store.assets.permission,'events-can-manage-events')
                                 ||store.hasPermission(store.assets.permission,'events-can-update-manager')"
                                     @click="store.toEdit(prop.data)"
@@ -132,6 +142,7 @@ const useVaah = vaah();
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="events-table-to-edit"
                                     v-tooltip.top="'Update'"
+                                    :disabled="store.disable_edit_button===true"
                                     v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
                                 ||store.hasPermission(store.assets.permission,'events-can-update-manager')"
                                     @click="store.toEdit(prop.data)"

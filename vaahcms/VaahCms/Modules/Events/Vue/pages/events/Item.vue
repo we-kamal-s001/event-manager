@@ -141,7 +141,7 @@ const toggleItemMenu = (event) => {
                         || column === 'managers'
                         ||column === 'manager_id' ||column === 'manager'
                         ||column === 'category'  ||column === 'categories'
-                                ||column === 'meta'">
+                                ||column === 'meta'  ||column === 'name'">
                             </template>
 
                             <template v-else-if="column === 'id' || column === 'uuid'">
@@ -152,10 +152,30 @@ const toggleItemMenu = (event) => {
                             </template>
 
                             <template v-else-if="column === 'slug'">
-                                <VhViewRow :label="column"
-                                           :value="value"
-                                           :can_copy="true"
-                                />
+                                <tr>
+                                    <td style="width: 50%;">
+                                        <VhViewRow label="Name" />
+                                    </td>
+                                    <td style="width: 50%; word-break: break-word; overflow-wrap: break-word;">
+                                        {{ store.item.name }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        <VhViewRow :label="column" />
+                                    </td>
+                                    <td style="width: 50%; word-break: break-word; overflow-wrap: break-word;">
+                                        {{ store.item.slug }}
+                                    </td>
+                                    <td>
+                                        <VhViewRow  value="store.item.slug"
+                                                   :can_copy="true"
+                                                    style="display: none"
+                                        />
+                                    </td>
+                                </tr>
+
+
 
 
                                 <tr>

@@ -589,6 +589,8 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toList()
         {
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(this.assets.empty_item);
             this.$router.push({name: 'managers.index'})
         },
@@ -602,12 +604,16 @@ export const useManagerStore = defineStore({
         //---------------------------------------------------------------------
         toView(item)
         {
+            this.disable_edit_button = false;
+            this.disable_list_button = true;
             this.item = vaah().clone(item);
             this.$router.push({name: 'managers.view', params:{id:item.id}})
         },
         //---------------------------------------------------------------------
         toEdit(item)
         {
+            this.disable_edit_button = true;
+            this.disable_list_button = false;
             this.item = item;
             this.$router.push({name: 'managers.form', params:{id:item.id}})
         },

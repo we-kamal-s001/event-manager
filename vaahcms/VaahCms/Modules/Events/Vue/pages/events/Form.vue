@@ -113,6 +113,7 @@ const toggleFormMenu = (event) => {
                                v-model="store.item.slug"/>
                 </VhField>
                 <VhField label="Category" >
+                    {{store.item.categories}}
                     <Dropdown v-model="store.item.categories"
                               :options="store.assets.category"
                               optionLabel="name"

@@ -37,13 +37,12 @@ onMounted(async () => {
 
             <Column field="name" header="Name"
                     :sortable="true">
-
                 <template #body="prop">
-                    <Badge v-if="prop.data.deleted_at"
-                           value="Trashed"
-                           severity="danger"></Badge>
-                    {{prop.data.name}}
+                    <Badge v-if="prop.data.deleted_at" value="Trashed" severity="danger"></Badge>
+                    <div style="word-break: break-word;">{{ prop.data.name }}</div>
                 </template>
+
+
 
             </Column>
 
@@ -106,13 +105,26 @@ onMounted(async () => {
 
                 <template #body="prop">
                     <div class="p-inputgroup ">
-                        <Button class="p-button-tiny p-button-text"
-                                data-testid="events-table-to-view"
-                                v-tooltip.top="'View'"
-                                v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
+
+                        <div v-if="prop.data.id!==store.item.id && store.disable_list_button!==false">
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="credentials-table-to-view"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
                                    ||store.hasPermission(store.assets.permission,'events-can-view-events')"
-                                @click="store.toView(prop.data)"
-                                icon="pi pi-eye"/>
+                                    v-tooltip.top="'View'"
+                                    @click="store.toView(prop.data)"
+                                    icon="pi pi-eye"/>
+                        </div>
+                        <div v-else>
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="credentials-table-to-view"
+                                    v-tooltip.top="'View'"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
+                                   ||store.hasPermission(store.assets.permission,'events-can-view-events')"
+                                    :disabled="store.disable_list_button===true"
+                                    @click="store.toView(prop.data)"
+                                    icon="pi pi-eye"/>
+                        </div>
                         <div v-if="prop.data.id!==store.item.id || store.isViewLarge() && prop.data.deleted_at">
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="events-table-to-edit"
