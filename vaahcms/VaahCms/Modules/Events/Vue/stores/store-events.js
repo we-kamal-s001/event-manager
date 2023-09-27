@@ -162,6 +162,10 @@ export const useEventsStore = defineStore({
         //---------------------------------------------------------------------
          watchItem(name)
           {
+              if(name==="")
+              {
+                  this.item.slug="";
+              }
               if(name && name !== "")
               {
                   this.item.name = vaah().capitalising(name);
@@ -217,7 +221,7 @@ export const useEventsStore = defineStore({
             }
         },
         //---------------------------------------------------------------------
-        async manager_id(id)
+        async managerId(id)
         {
             if(id)
             {
@@ -228,7 +232,7 @@ export const useEventsStore = defineStore({
 
 
         },  //---------------------------------------------------------------------
-        async manager_filter(slug)
+        async managerFilter(slug)
         {
             this.route.query.manager_id=null;
             this.query.filter.filter_by_manager=[slug];

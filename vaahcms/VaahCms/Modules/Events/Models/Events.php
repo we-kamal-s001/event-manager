@@ -82,7 +82,6 @@ class Events extends Model
         );
         return $fillable_columns;
     }
-
     //-------------------------------------------------
     public static function getEmptyItem()
     {
@@ -518,7 +517,8 @@ class Events extends Model
             $response['errors'][] = 'Record not found with ID: ' . $id;
             return $response;
         }
-        if (auth()->user()->hasPermission('events-can-update-events') || auth()->user()->hasPermission('events-can-manage-events')
+        if (auth()->user()->hasPermission('events-can-update-events') ||
+            auth()->user()->hasPermission('events-can-manage-events')
             || auth()->user()->hasPermission('events-can-view-events')) {
 
         } else {
@@ -634,7 +634,7 @@ class Events extends Model
             'name' => 'required|max:150',
             'slug' => 'required|max:150',
             'categories' => 'required',
-            'location' => 'required|max:150',
+            'location' => 'required|max:100',
             'managers' => 'required',
             'date' => 'required'
         );
@@ -665,16 +665,30 @@ class Events extends Model
     //-------------------------------------------------
     public static function seedSampleItems($records = 100)
     {
-
         $i = 0;
+        $category = Taxonomy::getTaxonomyByType('category')->pluck('id')->toArray();
+        $random_index_category = array_rand($category);
+        $selected_category = $category[$random_index_category];
+        $manager = Manager::all()->pluck('id')->toArray();
 
         while ($i <= $records) {
             $inputs = self::fillItem();
+            $faker = Factory::create();
+            $random_index = array_rand($manager);
+            $selected_manager = $manager[$random_index];
 
+            $inputs['name'] = $faker->text(25);
+            $inputs['slug'] = Str::slug($inputs['name']);
+            $inputs['location'] = $faker->country();
+            $inputs['date'] = $faker->date();
+            $inputs['categories'] = 4;
             $item = new self();
             $item->fill($inputs);
+            $item->manager_id=$selected_manager;
             $item->save();
-
+            $item->category()->create([
+                'category_id' => 4,
+            ]);
             $i++;
 
         }
@@ -687,6 +701,11 @@ class Events extends Model
     {
         $faker = Factory::create();
         $inputs = [];
+
+        $category = Taxonomy::getTaxonomyByType('category')->pluck('id')->toArray();
+        $random_index_category = array_rand($category);
+        $selected_category = $category[$random_index_category];
+
         $manager = Manager::all()->pluck('id')->toArray();
         $random_index = array_rand($manager);
         $selected_manager = $manager[$random_index];
@@ -695,7 +714,7 @@ class Events extends Model
         $inputs['slug'] = Str::slug($inputs['name']);
         $inputs['location'] = $faker->country();
         $inputs['date'] = $faker->date();
-        $inputs['categories'] = 4;
+        $inputs['categories'] = $selected_category;
         $inputs['managers'] = $selected_manager;
 
         $response['success'] = true;

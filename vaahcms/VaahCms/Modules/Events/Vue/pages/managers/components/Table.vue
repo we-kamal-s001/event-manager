@@ -48,7 +48,7 @@ const useVaah = vaah();
                                          @click="store.toEventFilter(prop.data)">
                                                     <Tag :value="prop.data.events.length"></Tag>
                                         </Button>
-                                               <Button  style="color:
+                                               <Button style="color:
                                                         white; margin-left: 8px; background-color:
                                                         darkblue; padding: 4px; border-radius: 50%;"
                                                        v-tooltip.top="'Add Event'"
@@ -64,13 +64,10 @@ const useVaah = vaah();
             >
 
                 <template #body="prop">
-                    <DataTable :value="prop.data.category">
-                        <Column>
-                            <template #body="prop">
-                                {{prop.data.get_taxonomy.name}}
-                            </template>
-                        </Column>
-                    </DataTable>
+                    <li v-for="category in prop.data.category" :key="category.id" style="list-style: none;">
+                        {{ category.get_taxonomy.name }}
+                    </li>
+
                 </template>
             </Column>
 
@@ -110,7 +107,7 @@ const useVaah = vaah();
 
                 <template #body="prop">
                     <div class="p-inputgroup "
-                        >
+                    >
 
                         <Button class="p-button-tiny p-button-text"
                                 data-testid="managers-table-to-view"
@@ -141,15 +138,16 @@ const useVaah = vaah();
                                     icon="pi pi-pencil"/>
                         </div>
 
+                        <div v-if="store.isViewLarge() && !prop.data.deleted_at">
 
-                        <Button class="p-button-tiny p-button-danger p-button-text"
-                                data-testid="managers-table-action-trash"
-                                v-if="store.isViewLarge() && !prop.data.deleted_at && store.hasPermission(store.assets.permission,'events-can-manage-events')
+                            <Button class="p-button-tiny p-button-danger p-button-text"
+                                    data-testid="managers-table-action-trash"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
                         ||store.hasPermission(store.assets.permission,'events-can-delete-manager')"
-                                @click="store.itemAction('trash', prop.data)"
-                                v-tooltip.top="'Trash'"
-                                icon="pi pi-trash"/>
-
+                                    @click="store.itemAction('trash', prop.data)"
+                                    v-tooltip.top="'Trash'"
+                                    icon="pi pi-trash"/>
+                        </div>
 
                         <Button class="p-button-tiny p-button-success p-button-text"
                                 data-testid="managers-table-action-restore"

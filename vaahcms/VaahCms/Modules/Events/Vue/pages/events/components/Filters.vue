@@ -55,7 +55,7 @@ const store = useEventsStore();
                                  optionValue="slug"
                                  placeholder="Select Manager"
                                  :maxSelectedLabels="3"
-                                 class="w-full md:w-20rem" />
+                                 class="w-full md:w-16rem" />
                 </div>
 
 <Divider />

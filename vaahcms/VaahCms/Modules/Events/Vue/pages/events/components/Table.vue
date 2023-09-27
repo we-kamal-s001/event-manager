@@ -10,7 +10,7 @@ const route = useRoute();
 
 onMounted(async () => {
     if (route.params && route.query.manager_slug) {
-        await store.manager_filter(route.query.manager_slug);
+        await store.managerFilter(route.query.manager_slug);
     }
     await store.getFormMenu();
 });
@@ -52,14 +52,11 @@ onMounted(async () => {
             >
 
                 <template #body="prop">
-                    <DataTable :value="prop.data.category">
-                        <Column>
-                            <template #body="prop">
-                                {{prop.data.get_taxonomy.name}}
-                            </template>
-                        </Column>
-                    </DataTable>
+                        <li v-for="category in prop.data.category" :key="category.id" style="list-style: none;">
+                            {{ category.get_taxonomy.name }}
+                        </li>
                 </template>
+
             </Column>
 
 
@@ -116,16 +113,7 @@ onMounted(async () => {
                                    ||store.hasPermission(store.assets.permission,'events-can-view-events')"
                                 @click="store.toView(prop.data)"
                                 icon="pi pi-eye"/>
-                        <div v-if="prop.data.id!==store.item.id">
-                            <Button class="p-button-tiny p-button-text"
-                                    data-testid="events-table-to-edit"
-                                    v-tooltip.top="'Update'"
-                                    v-if="store.disable_edit_button!==false && store.hasPermission(store.assets.permission,'events-can-manage-events')
-                                   ||store.hasPermission(store.assets.permission,'events-can-update-events')"
-                                    @click="store.toEdit(prop.data)"
-                                    icon="pi pi-pencil"/>
-                        </div>
-                        <div v-else>
+                        <div v-if="prop.data.id!==store.item.id || store.isViewLarge() && prop.data.deleted_at">
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="events-table-to-edit"
                                     v-tooltip.top="'Update'"
@@ -134,15 +122,27 @@ onMounted(async () => {
                                     @click="store.toEdit(prop.data)"
                                     icon="pi pi-pencil"/>
                         </div>
+                        <div v-else>
+                            <Button class="p-button-tiny p-button-text"
+                                    data-testid="events-table-to-edit"
+                                    v-tooltip.top="'Update'"
+                                    :disabled="store.disable_edit_button===true"
+                                    v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
+                                   ||store.hasPermission(store.assets.permission,'events-can-update-events')"
+                                    @click="store.toEdit(prop.data)"
+                                    icon="pi pi-pencil"/>
+                        </div>
 
 
-                        <Button class="p-button-tiny p-button-danger p-button-text"
-                                data-testid="events-table-action-trash"
-                                v-if="store.isViewLarge() && !prop.data.deleted_at && store.hasPermission(store.assets.permission,'events-can-manage-events')
+                       <div v-if="store.isViewLarge() && !prop.data.deleted_at">
+                           <Button class="p-button-tiny p-button-danger p-button-text"
+                                   data-testid="events-table-action-trash"
+                                   v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
                                    ||store.hasPermission(store.assets.permission,'events-can-delete-events')"
-                                @click="store.itemAction('trash', prop.data)"
-                                v-tooltip.top="'Trash'"
-                                icon="pi pi-trash"/>
+                                   @click="store.itemAction('trash', prop.data)"
+                                   v-tooltip.top="'Trash'"
+                                   icon="pi pi-trash"/>
+                       </div>
 
 
                         <Button class="p-button-tiny p-button-success p-button-text"

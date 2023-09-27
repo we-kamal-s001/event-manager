@@ -156,9 +156,7 @@ const toggleItemMenu = (event) => {
                                            :value="value"
                                            :can_copy="true"
                                 />
-<!--                                <VhViewRow label="Manager "-->
-<!--                                           :value="store.item.managers.name"-->
-<!--                                />-->
+
 
                                 <tr>
                                     <td>

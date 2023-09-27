@@ -16,7 +16,7 @@ onMounted(async () => {
     }
     if(route.params && route.query.manager_id)
     {
-        await store.manager_id(route.query.manager_id);
+        await store.managerId(route.query.manager_id);
     }
     await store.getFormMenu();
 });
@@ -99,7 +99,6 @@ const toggleFormMenu = (event) => {
 
 
             <div v-if="store.item" class="pt-2">
-
                 <VhField label="Event Name">
                     <InputText class="w-full"
                                name="events-name"
@@ -107,7 +106,6 @@ const toggleFormMenu = (event) => {
                                @update:modelValue="store.watchItem"
                                v-model="store.item.name"/>
                 </VhField>
-
                 <VhField label="Slug">
                     <InputText class="w-full"
                                name="events-slug"
@@ -141,7 +139,7 @@ const toggleFormMenu = (event) => {
 
 
                 <VhField label="Dates">
-                    <Calendar v-model="store.item.date" showIcon   />
+                    <Calendar v-model="store.item.date" showIcon class="w-full"   />
 
                 </VhField>
 

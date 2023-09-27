@@ -415,6 +415,8 @@ export const useManagerStore = defineStore({
             if(data)
             {
                 this.item = data;
+                this.item.categories=data.category[0].category_id;
+
                 await this.getList();
                 await this.formActionAfter();
                 this.getItemMenu();

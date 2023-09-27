@@ -394,6 +394,7 @@ class Manager extends Model
 
         $items_id = collect($inputs['items'])->pluck('id')->toArray();
         self::whereIn('id', $items_id)->forceDelete();
+        Events::where('manager_id',$items_id)->forceDelete();
 
         $response['success'] = true;
         $response['data'] = true;
@@ -569,6 +570,7 @@ class Manager extends Model
             return $response;
         }
         $item->forceDelete();
+        Events::where('manager_id',$id)->forceDelete();
 
         $response['success'] = true;
         $response['data'] = [];
@@ -648,14 +650,21 @@ class Manager extends Model
     {
 
         $i = 0;
-
+        $faker = Factory::create();
         while ($i <= $records) {
-            $inputs = self::fillItem();
-
+            $inputs = [];
+            $gender = $faker->randomElement(['male', 'female']);
+            $inputs['name'] = $faker->text(25);
+            $inputs['slug'] = Str::slug($inputs['name']);
+            $inputs['username'] =  $faker->text(40);
+            $inputs['email'] =  $faker->email();
+            $inputs['gender']=$gender;
             $item = new self();
             $item->fill($inputs);
             $item->save();
-
+            $item->category()->create([
+                'category_id'=>5,
+            ]);
             $i++;
 
         }
@@ -674,7 +683,7 @@ class Manager extends Model
         $inputs['username'] =  $faker->text(40);
         $inputs['email'] =  $faker->email();
         $inputs['gender']=$gender;
-        $inputs['category']=4;
+        $inputs['categories']=4;
 
 
         $response['success'] = true;
