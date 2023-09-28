@@ -128,10 +128,10 @@ class EventsController extends Controller
         }
     }
     //----------------------------------------------------------
-    public function fillItem(Request $request)
+    public function fillItem(Request $request,$id=null)
     {
         try{
-            return Events::fillItem($request);
+            return Events::fillItem($request,$id);
         }catch (\Exception $e){
             $response = [];
             $response['success'] = false;

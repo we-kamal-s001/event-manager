@@ -51,9 +51,8 @@ onMounted(async () => {
             >
 
                 <template #body="prop">
-                        <li v-for="category in prop.data.category" :key="category.id" style="list-style: none;">
-                            {{ category.get_taxonomy.name }}
-                        </li>
+                    {{prop.data.category.get_taxonomy.name}}
+
                 </template>
 
             </Column>
@@ -107,6 +106,7 @@ onMounted(async () => {
                     <div class="p-inputgroup ">
 
                         <div v-if="prop.data.id!==store.item.id && store.disable_list_button!==false">
+
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="credentials-table-to-view"
                                     v-if="store.hasPermission(store.assets.permission,'events-can-manage-events')
@@ -116,6 +116,7 @@ onMounted(async () => {
                                     icon="pi pi-eye"/>
                         </div>
                         <div v-else>
+
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="credentials-table-to-view"
                                     v-tooltip.top="'View'"
@@ -125,7 +126,8 @@ onMounted(async () => {
                                     @click="store.toView(prop.data)"
                                     icon="pi pi-eye"/>
                         </div>
-                        <div v-if="prop.data.id!==store.item.id || store.isViewLarge() && prop.data.deleted_at">
+                        <div v-if="prop.data.id!==store.item.id && store.disable_edit_button!==false ">
+
                             <Button class="p-button-tiny p-button-text"
                                     data-testid="events-table-to-edit"
                                     v-tooltip.top="'Update'"

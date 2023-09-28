@@ -460,7 +460,16 @@ export const useEventsStore = defineStore({
                 model_namespace: this.model,
                 except: this.assets.fillable.except,
             };
-            let url = this.ajax_url + '/fill';
+            let url=[];
+            if(this.item.id)
+            {
+                  url = this.ajax_url + '/fill/'+this.item.id;
+
+            }
+            else{
+                  url = this.ajax_url + '/fill';
+
+            }
 
             await vaah().ajax(
                 url,
@@ -471,6 +480,7 @@ export const useEventsStore = defineStore({
         getFormInputsAfter: function (data, res) {
             if (data) {
                 this.item = data;
+                this.disable_edit_button=true;
                 let self = this;
                 Object.keys(data.fill).forEach(function (key) {
                     self.item[key] = data.fill[key];
@@ -587,6 +597,7 @@ export const useEventsStore = defineStore({
         },
         //---------------------------------------------------------------------
         toView(item) {
+            this.getItem(item.id);
             this.disable_edit_button = false;
             this.disable_list_button = true;
             this.item = vaah().clone(item);
@@ -594,9 +605,8 @@ export const useEventsStore = defineStore({
         },
         //---------------------------------------------------------------------
         toEdit(item) {
+            this.getItem(item.id);
             this.item.categories = item.category[0].category_id;
-            console.log(597,this.item.categories)
-
             this.item.managers = item.manager.id;
             this.disable_edit_button = true;
             this.disable_list_button = false;

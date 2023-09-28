@@ -130,7 +130,7 @@ class Events extends Model
     //-------------------------------------------------
     public function category()
     {
-        return $this->morphMany(category::class, 'categoryable')
+        return $this->morphOne(category::class, 'categoryable')
             ->with('getTaxonomy');
     }
 
@@ -631,8 +631,8 @@ class Events extends Model
     {
 
         $rules = array(
-            'name' => 'required|max:150',
-            'slug' => 'required|max:150',
+            'name' => 'required|max:50',
+            'slug' => 'required|max:50',
             'categories' => 'required',
             'location' => 'required|max:100',
             'managers' => 'required',
@@ -697,7 +697,7 @@ class Events extends Model
 
 
     //-------------------------------------------------
-    public static function fillItem()
+    public static function fillItem($request,$id=null)
     {
         $faker = Factory::create();
         $inputs = [];
@@ -709,7 +709,10 @@ class Events extends Model
         $manager = Manager::all()->pluck('id')->toArray();
         $random_index = array_rand($manager);
         $selected_manager = $manager[$random_index];
-
+         if($id)
+         {
+             $inputs['id']=$id;
+         }
         $inputs['name'] = $faker->text(25);
         $inputs['slug'] = Str::slug($inputs['name']);
         $inputs['location'] = $faker->country();

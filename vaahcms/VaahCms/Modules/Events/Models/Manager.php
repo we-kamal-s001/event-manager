@@ -99,7 +99,7 @@ class Manager extends Model
 
     public function category()
     {
-        return $this->morphMany(category::class,'categoryable','','','',)
+        return $this->morphOne(category::class,'categoryable','','','',)
             ->with('getTaxonomy');
     }
 

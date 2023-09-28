@@ -20,6 +20,7 @@ onMounted(async () => {
     }
     await store.getFormMenu();
 });
+const a=5;
 //--------form_menu
 const form_menu = ref();
 const toggleFormMenu = (event) => {
@@ -31,11 +32,9 @@ const toggleFormMenu = (event) => {
 <template>
 
     <div class="col-6" >
-
         <Panel class="is-small">
 
             <template class="p-1" #header>
-
 
                 <div class="flex flex-row">
                     <div class="p-panel-title">
@@ -44,7 +43,7 @@ const toggleFormMenu = (event) => {
                         </span>
                         <span v-else>
                             Create
-                        </span>
+                      </span>
                     </div>
 
                 </div>
@@ -99,6 +98,7 @@ const toggleFormMenu = (event) => {
 
 
             <div v-if="store.item" class="pt-2">
+
                 <VhField label="Event Name">
                     <InputText class="w-full"
                                name="events-name"
@@ -110,10 +110,10 @@ const toggleFormMenu = (event) => {
                     <InputText class="w-full"
                                name="events-slug"
                                data-testid="events-slug"
-                               v-model="store.item.slug"/>
+                               v-model="store.item.slug"
+                    disabled=""/>
                 </VhField>
                 <VhField label="Category" >
-                    {{store.item.categories}}
                     <Dropdown v-model="store.item.categories"
                               :options="store.assets.category"
                               optionLabel="name"

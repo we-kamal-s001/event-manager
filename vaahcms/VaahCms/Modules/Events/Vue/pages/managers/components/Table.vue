@@ -62,12 +62,8 @@ const useVaah = vaah();
             </Column>
             <Column field="type" header="Category"
             >
-
                 <template #body="prop">
-                    <li v-for="category in prop.data.category" :key="category.id" style="list-style: none;">
-                        {{ category.get_taxonomy.name }}
-                    </li>
-
+                    {{prop.data.category.get_taxonomy.name}}
                 </template>
             </Column>
 

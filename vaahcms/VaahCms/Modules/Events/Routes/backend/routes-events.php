@@ -3,9 +3,9 @@
 Route::group(
     [
         'prefix' => 'backend/events/events',
-        
+
         'middleware' => ['web', 'has.backend.access'],
-        
+
         'namespace' => 'Backend',
 ],
 function () {
@@ -34,7 +34,7 @@ function () {
     /**
      * Fill Form Inputs
      */
-    Route::any('/fill', 'EventsController@fillItem')
+    Route::any('/fill/{id?}', 'EventsController@fillItem')
         ->name('vh.backend.events.events.fill');
 
     /**
